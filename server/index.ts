@@ -59,26 +59,10 @@ app.use((req, res, next) => {
   // Try to serve the app on port 5000 first
   // If that's not available, try a different port in the range 5001-5010
   // This serves both the API and the client
-  let port = 5000;
-  
-  const startServer = (tryPort: number) => {
-    server.listen({
-      port: tryPort,
-      host: "0.0.0.0",
-      reusePort: true,
-    }, () => {
-      log(`serving on port ${tryPort}`);
-    }).on('error', (err: any) => {
-      if (err.code === 'EADDRINUSE' && tryPort < 5010) {
-        // Try the next port if this one is in use
-        log(`Port ${tryPort} is in use, trying ${tryPort + 1}`);
-        startServer(tryPort + 1);
-      } else {
-        log(`Failed to start server: ${err.message}`);
-        throw err;
-      }
-    });
-  };
+    const PORT = parseInt(process.env.PORT || "5000", 10);
 
-  startServer(port);
+  server.listen(PORT, "0.0.0.0", () => {
+    log(`serving on port ${PORT}`);
+  });
+
 })();
